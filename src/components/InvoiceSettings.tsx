@@ -1,8 +1,10 @@
 "use client";
 
 import { Tab } from "@headlessui/react";
-import { HiChevronDown } from "react-icons/hi";
 import clsx from "clsx";
+import Button from "./Button";
+import ItemsPanel from "./ItemsPanel";
+import { useSettings } from "@/hooks/useSettings";
 
 function SettingsTab({ children }: { children: React.ReactNode }) {
   return (
@@ -27,9 +29,11 @@ function SettingsPanel({ children }: { children: React.ReactNode }) {
 }
 
 export default function InvoiceSettings() {
+  const [openTab, setTab] = useSettings((s) => [s.openTab, s.setTab]);
+
   return (
     <div className="flex h-full flex-col gap-2">
-      <Tab.Group>
+      <Tab.Group onChange={setTab} defaultIndex={openTab}>
         <Tab.List className="flex space-x-1 rounded-xl bg-primary-card/50 p-1">
           <SettingsTab>Template</SettingsTab>
           <SettingsTab>Invoice</SettingsTab>
@@ -38,7 +42,9 @@ export default function InvoiceSettings() {
         <Tab.Panels className="mt-3">
           <SettingsPanel>Template</SettingsPanel>
           <SettingsPanel>Invoice</SettingsPanel>
-          <SettingsPanel>Line Items</SettingsPanel>
+          <SettingsPanel>
+            <ItemsPanel />
+          </SettingsPanel>
         </Tab.Panels>
       </Tab.Group>
     </div>

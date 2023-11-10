@@ -32,6 +32,9 @@ const config: Config = {
           700: "#45004A",
           800: "#36003B",
         },
+        button: {
+          bg: "#FBE5FB",
+        },
       },
       fontFamily: {
         primary: ["var(--font-sansation)", "sans-serif"],

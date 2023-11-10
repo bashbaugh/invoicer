@@ -1,3 +1,5 @@
+"use client";
+
 import { Document, Page, Text, View, Font } from "@react-pdf/renderer";
 import { TemplateProps } from ".";
 
