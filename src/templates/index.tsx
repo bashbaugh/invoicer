@@ -1,5 +1,7 @@
 import Template1 from "./template1";
 
+// TODO dynamically load template
+
 const templates = [
   {
     name: "Template 1",
