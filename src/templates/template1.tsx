@@ -33,7 +33,7 @@ const ITable = ({
   colSize,
 }: {
   rows: Array<{
-    cols: string[];
+    cols: (string | number)[];
     bold?: boolean;
   }>;
   colSize?: number[];
@@ -59,7 +59,7 @@ const ITable = ({
           }}
           key={j}
         >
-          {c}
+          {typeof c === "number" ? c.toFixed(2) : c}
         </Text>
       ))}
     </View>
@@ -159,10 +159,13 @@ export default function Template1(props: TemplateProps) {
             <ITable
               rows={[
                 { bold: true, cols: ["Description", "Qty", "Rate", "Amount"] },
-                { cols: ["Design", "1", "$100.00", "$100.00"] },
-                { cols: ["Development", "12", "$55.00", "$2399.00"] },
-                { cols: ["Marketing", "1", "$100.00", "$100.00"] },
-                { bold: true, cols: ["Subtotal", "", "", "$2599.00"] },
+                ...props.invoice.lineItems.map((i) => ({
+                  cols: [i.description, i.quantity, i.unitPrice, i.total],
+                })),
+                {
+                  bold: true,
+                  cols: ["Subtotal", "", "", props.invoice.subtotal],
+                },
               ]}
               colSize={[50, 10, 20, 20]}
             />

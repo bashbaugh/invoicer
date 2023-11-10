@@ -19,6 +19,7 @@ export const useSettings = create(
     }),
     {
       name: "invoicer-settings",
+      version: 0,
     }
   )
 );

@@ -18,9 +18,13 @@ export default function ProjectSelector({
 
   const sortedProjects = useMemo(
     () =>
-      projects.sort(
-        (a, b) => new Date(b.at).getTime() - new Date(a.at).getTime()
-      ),
+      projects
+        .sort((a, b) => {
+          return new Date(b.at).getTime() - new Date(a.at).getTime();
+        })
+        .sort((a, b) => {
+          return b.client_id - a.client_id;
+        }),
     [projects]
   );
 
@@ -59,7 +63,7 @@ export default function ProjectSelector({
             />
           </Combobox.Button>
         </div>
-        <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
+        <Combobox.Options className="absolute mt-1 max-h-96 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
           {filteredProjects.length === 0 ? (
             <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
               No projects found.
@@ -70,7 +74,7 @@ export default function ProjectSelector({
                 key={p.id}
                 className={({ active }) =>
                   `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                    active ? "bg-teal-600 text-white" : "text-gray-900"
+                    active ? "bg-primary-500 text-white" : "text-gray-900"
                   }`
                 }
                 value={p.id}
@@ -87,7 +91,7 @@ export default function ProjectSelector({
                     {selected ? (
                       <span
                         className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                          active ? "text-white" : "text-teal-600"
+                          active ? "text-white" : "text-primary-600"
                         }`}
                       >
                         <HiCheck className="h-5 w-5" aria-hidden="true" />

@@ -1,19 +1,29 @@
+import { InvoiceData } from "@/hooks/useInvoice";
+import dynamic from "next/dynamic";
 import Template1 from "./template1";
 
-// TODO dynamically load template
+// const Template1 = dynamic(() => import(`./template1`));
 
-const templates = [
+export const templates = [
   {
     name: "Template 1",
     component: Template1,
   },
-];
+] as const;
 
-export default templates;
+export type TemplateProps = {
+  invoice: InvoiceData;
+};
 
-export type TemplateProps = Partial<{
-  fromName: string;
-  toName: string;
-  fromAddress: string;
-  toAddress: string;
-}>;
+interface InvoiceGeneratorProps {
+  template: number;
+  invoice: InvoiceData;
+}
+
+export default function InvoiceGenerator({
+  template,
+  invoice,
+}: InvoiceGeneratorProps) {
+  const InvoiceTemplate = templates[template].component;
+  return <InvoiceTemplate invoice={invoice} />;
+}

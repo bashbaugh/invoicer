@@ -2,7 +2,6 @@
 
 import { Tab } from "@headlessui/react";
 import clsx from "clsx";
-import Button from "./Button";
 import ItemsPanel from "./ItemsPanel";
 import { useSettings } from "@/hooks/useSettings";
 

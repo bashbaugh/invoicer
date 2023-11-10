@@ -1,10 +1,11 @@
 import { useTogglData } from "@/hooks/useTogglData";
 import Button from "./Button";
 import ProjectSelector from "./ProjectSelector";
-import { useEffect, useMemo, useState } from "react";
-import { TogglProject, TogglTimeEntry } from "@/app/api/toggl/route";
+import { useEffect, useMemo } from "react";
+import { TogglTimeEntry } from "@/app/api/toggl/route";
 import { useSettings } from "@/hooks/useSettings";
 import { secToString } from "@/util/time";
+import { useInvoice } from "@/hooks/useInvoice";
 
 function EntriesTable({ entries }: { entries: TogglTimeEntry[] }) {
   return (
@@ -13,20 +14,13 @@ function EntriesTable({ entries }: { entries: TogglTimeEntry[] }) {
         <tr className="">
           <th className="pb-3">Description</th>
           <th className="">Duration</th>
-          <th className="">Start</th>
-          <th className="">Stop</th>
         </tr>
       </thead>
       <tbody>
         {entries.map((e) => (
           <tr key={e.id}>
             <td>{e.description}</td>
-            <td>
-              {secToString(e.duration)} {e.duration}
-            </td>
-            <td>
-              {secToString(e.durationB)} {e.durationB}
-            </td>
+            <td>{secToString(e.duration)}</td>
           </tr>
         ))}
       </tbody>
@@ -41,14 +35,17 @@ export default function ItemsPanel() {
     s.setTogglSelectedProjects,
   ]);
 
+  const { invoice, setInvoiceData } = useInvoice();
+
   useEffect(() => {
     if (projects?.length === 0) {
       loadData();
     }
   }, []);
 
-  const projectEntries = entries?.filter((e) =>
-    selectedProjects.includes(e.project_id)
+  const projectEntries = useMemo(
+    () => entries?.filter((e) => selectedProjects.includes(e.project_id)),
+    [entries, selectedProjects]
   );
 
   const aggregatedEntries = useMemo(() => {
@@ -63,13 +60,43 @@ export default function ItemsPanel() {
       if (existingEntry) {
         existingEntry.duration += entry.duration;
       } else {
-        acc.push(entry);
+        acc.push({ ...entry });
       }
       return acc;
     }, [] as TogglTimeEntry[]);
 
     return aggregatedEntries;
   }, [projectEntries]);
+
+  useEffect(() => {
+    // TODO hashmaps?
+
+    const lineItems = selectedProjects?.map((pid) => {
+      const p = projects?.find((p) => p.id === pid);
+      const timeEntries = aggregatedEntries?.filter(
+        (e) => e.project_id === pid
+      );
+
+      const totalTime =
+        timeEntries?.reduce((acc, e) => acc + e.duration, 0) / 60 / 60;
+
+      return {
+        description: p?.name || "",
+        subitems: timeEntries?.map(
+          (e) => `${e.description} (${secToString(e.duration)})`
+        ),
+        quantity: totalTime,
+        unitPrice: 50,
+        total: totalTime * 50,
+      };
+    });
+
+    setInvoiceData({
+      lineItems,
+      subtotal: lineItems?.reduce((acc, i) => acc + i.total, 0) || 0,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [aggregatedEntries]);
 
   return (
     <div className="flex flex-col gap-3">
@@ -83,7 +110,7 @@ export default function ItemsPanel() {
       </div>
       <div>
         {projectEntries?.length !== 0 && (
-          <EntriesTable entries={projectEntries} />
+          <EntriesTable entries={aggregatedEntries} />
         )}
       </div>
     </div>

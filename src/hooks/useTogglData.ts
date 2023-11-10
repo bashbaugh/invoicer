@@ -14,13 +14,7 @@ export const useTogglData = create<TogglData>((set, get) => ({
     const response = await fetch("/api/toggl");
     const data = await response.json();
     set({
-      entries: data.timeEntries.map((e: TogglTimeEntry) =>
-        Object.assign({}, e, {
-          // WTF - render, check items tab
-          duration: 9,
-          durationB: new Date(e.stop).getTime() - new Date(e.start).getTime(),
-        })
-      ),
+      entries: data.timeEntries,
       projects: data.projects,
     });
 
