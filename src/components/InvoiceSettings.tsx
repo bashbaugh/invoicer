@@ -31,14 +31,15 @@ export default function InvoiceSettings() {
   const [openTab, setTab] = useSettings((s) => [s.openTab, s.setTab]);
 
   return (
-    <div className="flex h-full flex-col gap-2">
+    <div className="flex flex-1 overflow-clip h-full flex-col gap-2">
       <Tab.Group onChange={setTab} defaultIndex={openTab}>
         <Tab.List className="flex space-x-1 rounded-xl bg-primary-card/50 p-1">
           <SettingsTab>Template</SettingsTab>
           <SettingsTab>Invoice</SettingsTab>
           <SettingsTab>Line Items</SettingsTab>
         </Tab.List>
-        <Tab.Panels className="mt-3">
+        <Tab.Panels className="overflow-y-auto mt-3 pb-8">
+          {/* <div className="absolute bottom-0 h-12 bg-green-300" /> */}
           <SettingsPanel>Template</SettingsPanel>
           <SettingsPanel>Invoice</SettingsPanel>
           <SettingsPanel>

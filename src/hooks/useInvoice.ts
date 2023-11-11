@@ -1,44 +1,81 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import deepmerge from "deepmerge";
 
 export interface InvoiceData {
   lineItems: Array<{
     description: string;
-    subitems: string[];
-    quantity: number;
-    unitPrice: number;
-    total: number;
+    subitems: {
+      text: string;
+      tags?: string[];
+    }[];
+    quantity: string;
+    unitPrice: string;
+    total: string;
   }>;
-  subtotal: number;
+  subtotal: string;
+  total: string;
+
+  recipient: {
+    name: string;
+    contactDetails: string;
+  };
+
+  from: {
+    name: string;
+    contactDetails: string;
+  };
+
+  issueDate: string;
+  dueDate: string;
+
+  invoiceNumber: string;
+  invoiceSubtitle: string;
+
+  paymentDetails: string;
+  note: string;
 }
 
 export const useInvoice = create(
   persist<{
     invoice: InvoiceData;
-    version: number;
-    setInvoiceData: (data: Partial<InvoiceData>) => void;
+    updateInvoiceData: (data: Partial<InvoiceData>) => void;
   }>(
     (set) => ({
       invoice: {
         lineItems: [],
-        subtotal: 0,
+        subtotal: "$0",
+        total: "$0",
+        recipient: {
+          name: "Some Company",
+          contactDetails: "123 Blueberry Drive\nCity, ST 12345",
+        },
+        from: {
+          name: "Jane Smith",
+          contactDetails: "134 Raspberry Circle\nCity, ST 12345",
+        },
+        issueDate: "11/01/2023",
+        dueDate: "11/31/2023",
+        invoiceNumber: "INV-002",
+        invoiceSubtitle: "October 2023",
+        paymentDetails: "Lorem Ipsum",
+        note: "Thank you",
       },
 
-      version: 0,
-
-      setInvoiceData: (data) => {
-        set((state) => ({
-          invoice: {
-            ...state.invoice,
-            ...data,
-          },
-          version: state.version + 1,
-        }));
+      updateInvoiceData: (data) => {
+        set((state) => {
+          return {
+            invoice: {
+              ...state.invoice,
+              ...data,
+            },
+          };
+        });
       },
     }),
     {
       name: "invoice-data",
-      version: 1,
+      version: 2,
     }
   )
 );

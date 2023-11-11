@@ -17,7 +17,5 @@ export const useTogglData = create<TogglData>((set, get) => ({
       entries: data.timeEntries,
       projects: data.projects,
     });
-
-    console.log(get().entries);
   },
 }));

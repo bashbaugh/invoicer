@@ -1,3 +1,4 @@
+import { time } from "console";
 import { NextResponse } from "next/server";
 
 const TOGGL_TOKEN = process.env.TOGGL_TOKEN;
@@ -47,7 +48,7 @@ export async function GET() {
   );
 
   const timeEntriesData = await togglFetch<RTogglTimeEntry[]>(
-    `https://api.track.toggl.com/api/v9/me/time_entries?start_date=2023-11-01&end_date=2023-11-10`
+    `https://api.track.toggl.com/api/v9/me/time_entries?start_date=2023-10-01&end_date=2023-11-30`
   );
 
   const projects = projectData

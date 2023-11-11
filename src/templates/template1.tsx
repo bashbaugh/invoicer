@@ -1,6 +1,6 @@
 "use client";
 
-import { Document, Page, Text, View, Font } from "@react-pdf/renderer";
+import { Document, Page, Text, View, Font, Link } from "@react-pdf/renderer";
 import { TemplateProps } from ".";
 
 Font.register({
@@ -34,6 +34,10 @@ const ITable = ({
 }: {
   rows: Array<{
     cols: (string | number)[];
+    subitems?: {
+      text: string;
+      tags?: string[];
+    }[];
     bold?: boolean;
   }>;
   colSize?: number[];
@@ -41,31 +45,82 @@ const ITable = ({
   rows.map((r, i) => (
     <View
       key={i}
+      wrap={false}
       style={{
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-between",
+        padding: "8px 0",
         fontFamily: r.bold ? "Clash Grotesk" : "Inter",
         fontSize: "12px",
-        fontWeight: r.bold ? "bold" : "normal",
-        padding: "8px 0",
         borderTop: i == 0 ? "none" : "1px solid #BFBFBF",
       }}
     >
-      {r.cols.map((c, j) => (
-        <Text
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          fontWeight: r.bold ? "bold" : "normal",
+        }}
+      >
+        {r.cols.map((c, j) => (
+          <Text
+            style={{
+              flex: colSize ? `0 0 ${colSize[j]}%` : "1 1 0%",
+            }}
+            key={j}
+          >
+            {typeof c === "number" ? c.toFixed(2) : c}
+          </Text>
+        ))}
+      </View>
+
+      {r.subitems && (
+        <View
           style={{
-            flex: colSize ? `0 0 ${colSize[j]}%` : "1 1 0%",
+            marginTop: "4px",
           }}
-          key={j}
         >
-          {typeof c === "number" ? c.toFixed(2) : c}
-        </Text>
-      ))}
+          {r.subitems.map((t, j) => (
+            <View
+              key={j}
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: "4px",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: "10px",
+                  marginLeft: "16px",
+                }}
+              >
+                {t.text}
+              </Text>
+
+              {t.tags?.map((tag) => (
+                <Text
+                  key={tag}
+                  style={{
+                    padding: "1px 3px",
+                    borderRadius: "4px",
+                    backgroundColor: "#DDBDF1",
+                    fontSize: "8px",
+                  }}
+                >
+                  {tag}
+                </Text>
+              ))}
+            </View>
+          ))}
+        </View>
+      )}
     </View>
   ));
 
 export default function Template1(props: TemplateProps) {
+  console.log(props.invoice);
+
   return (
     <Document>
       <Page
@@ -101,9 +156,18 @@ export default function Template1(props: TemplateProps) {
                   opacity: 0.5,
                 }}
               >
-                #001
+                {props.invoice.invoiceNumber}
               </Text>
             </View>
+            <Text
+              style={{
+                fontFamily: "Clash Grotesk",
+                fontSize: "14px",
+                marginTop: "-8px",
+              }}
+            >
+              {props.invoice.invoiceSubtitle}
+            </Text>
           </View>
 
           <View
@@ -124,6 +188,26 @@ export default function Template1(props: TemplateProps) {
               >
                 From
               </Text>
+              <View
+                style={{
+                  fontFamily: "Inter",
+                }}
+              >
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                  }}
+                >
+                  {props.invoice.from.name}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: "12px",
+                  }}
+                >
+                  {props.invoice.from.contactDetails}
+                </Text>
+              </View>
             </View>
             <View>
               <Text
@@ -132,8 +216,28 @@ export default function Template1(props: TemplateProps) {
                   opacity: 0.5,
                 }}
               >
-                To
+                Bill To
               </Text>
+              <View
+                style={{
+                  fontFamily: "Inter",
+                }}
+              >
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                  }}
+                >
+                  {props.invoice.recipient.name}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: "12px",
+                  }}
+                >
+                  {props.invoice.recipient.contactDetails}
+                </Text>
+              </View>
             </View>
             <View
               style={{
@@ -145,9 +249,23 @@ export default function Template1(props: TemplateProps) {
               }}
             >
               <Text style={{ opacity: 0.5 }}>Issued</Text>
-              <Text>6/29/2022</Text>
+              <Text
+                style={{
+                  fontFamily: "Inter",
+                  fontWeight: "bold",
+                }}
+              >
+                {props.invoice.issueDate}
+              </Text>
               <Text style={{ opacity: 0.5, marginTop: "6px" }}>Due</Text>
-              <Text>8/01/2022</Text>
+              <Text
+                style={{
+                  fontFamily: "Inter",
+                  fontWeight: "bold",
+                }}
+              >
+                {props.invoice.dueDate}
+              </Text>
             </View>
           </View>
 
@@ -161,6 +279,7 @@ export default function Template1(props: TemplateProps) {
                 { bold: true, cols: ["Description", "Qty", "Rate", "Amount"] },
                 ...props.invoice.lineItems.map((i) => ({
                   cols: [i.description, i.quantity, i.unitPrice, i.total],
+                  subitems: i.subitems,
                 })),
                 {
                   bold: true,
@@ -170,6 +289,50 @@ export default function Template1(props: TemplateProps) {
               colSize={[50, 10, 20, 20]}
             />
           </View>
+
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              marginTop: "24px",
+              gap: "48px",
+            }}
+          >
+            <View
+              style={{
+                flex: "1 1 0%",
+                fontFamily: "Inter",
+                fontSize: "12px",
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "Clash Grotesk",
+                }}
+              >
+                Payment
+              </Text>
+              <Text>{props.invoice.paymentDetails}</Text>
+            </View>
+            <Text
+              style={{
+                fontSize: "24px",
+              }}
+            >
+              Total {props.invoice.total}
+            </Text>
+          </View>
+
+          <Text
+            style={{
+              marginTop: "24px",
+              opacity: 0.6,
+              fontFamily: "Inter",
+              fontSize: "12px",
+            }}
+          >
+            {props.invoice.note}
+          </Text>
         </View>
       </Page>
     </Document>
