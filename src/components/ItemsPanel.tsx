@@ -5,7 +5,7 @@ import { useEffect, useMemo } from "react";
 import { TogglTimeEntry } from "@/app/api/toggl/route";
 import { useSettings } from "@/hooks/useSettings";
 import { useInvoice } from "@/hooks/useInvoice";
-import { HiPlus } from "react-icons/hi";
+import { HiPlus, HiRefresh } from "react-icons/hi";
 import LineItem from "./LineItem";
 import { numFromStr, secToString } from "@/lib/util";
 
@@ -52,9 +52,12 @@ export default function ItemsPanel() {
 
   return (
     <div className="flex flex-col gap-3">
-      <Button onClick={loadData}>Refresh Toggl Data</Button>
-      <div>
-        <Button className="float-right" icon={<HiPlus />} onClick={addLineItem}>
+      <div className="flex gap-3">
+        <Button icon={<HiRefresh />} onClick={loadData}>
+          Refresh Toggl Data
+        </Button>
+        <div className="flex-1" />
+        <Button icon={<HiPlus />} onClick={addLineItem}>
           Add item
         </Button>
       </div>

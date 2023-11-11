@@ -1,6 +1,6 @@
 import { TogglProject } from "@/app/api/toggl/route";
 import { Combobox, Transition } from "@headlessui/react";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { HiChevronDown, HiCheck } from "react-icons/hi";
 
 interface ProjectSelectorProps {
@@ -15,6 +15,7 @@ export default function ProjectSelector({
   changeSelected,
 }: ProjectSelectorProps) {
   const [query, setQuery] = useState("");
+  const [inputFocused, setInputFocused] = useState(false);
 
   const sortedProjects = useMemo(
     () =>
@@ -47,15 +48,35 @@ export default function ProjectSelector({
     <Combobox value={selectedProjectIds} onChange={changeSelected} multiple>
       <div className="relative mt-1">
         <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 sm:text-sm">
-          {/* <Combobox.Label>Select Projects</Combobox.Label> */}
-          <Combobox.Input
-            className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 outline-none"
-            displayValue={(selected: any) =>
-              // TODO names
-              ""
-            }
-            onChange={(event) => setQuery(event.target.value)}
-          />
+          <div className="py-2 pl-3 pr-10 text-sm leading-5 text-gray-900">
+            <Combobox.Label className="">
+              {!!query || (selectedProjectIds.length && !inputFocused) ? (
+                <>&nbsp;</>
+              ) : inputFocused ? (
+                `Search projects...`
+              ) : (
+                `Connect Toggl projects`
+              )}
+            </Combobox.Label>
+            <Combobox.Input
+              onFocus={() => setInputFocused(true)}
+              onBlur={() => setInputFocused(false)}
+              className={
+                "absolute left-0 top-0 w-full bg-transparent py-2 pl-3 pr-10 outline-none"
+              }
+              displayValue={(selected: any) =>
+                selected.length
+                  ? inputFocused
+                    ? query
+                    : `Including time from ${selected.length} project${
+                        selected.length === 1 ? "" : "s"
+                      }`
+                  : ""
+              }
+              onChange={(event) => setQuery(event.target.value)}
+            />
+          </div>
+
           <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
             <HiChevronDown
               className="h-5 w-5 text-gray-400"

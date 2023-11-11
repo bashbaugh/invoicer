@@ -38,7 +38,7 @@ export default function InvoiceSettings() {
           <SettingsTab>Invoice</SettingsTab>
           <SettingsTab>Line Items</SettingsTab>
         </Tab.List>
-        <Tab.Panels className="overflow-y-auto mt-3 pb-8">
+        <Tab.Panels className="h-full overflow-y-auto mt-3 pb-8">
           {/* <div className="absolute bottom-0 h-12 bg-green-300" /> */}
           <SettingsPanel>Template</SettingsPanel>
           <SettingsPanel>Invoice</SettingsPanel>

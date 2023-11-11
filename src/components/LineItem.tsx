@@ -1,8 +1,7 @@
 import { TogglTimeEntry } from "@/app/api/toggl/route";
-import { useInvoice } from "@/hooks/useInvoice";
 import { useSettings } from "@/hooks/useSettings";
 import { useTogglData } from "@/hooks/useTogglData";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import ProjectSelector from "./ProjectSelector";
 import Input from "./Input";
 import { FiTrash } from "react-icons/fi";
