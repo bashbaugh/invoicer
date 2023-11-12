@@ -83,7 +83,24 @@ export default function InvoicePanel() {
           />
         </InputGroup>
 
-        <InputGroup label="Payment info" className="col-span-2">
+        <InputGroup
+          label="Payment info"
+          className="col-span-2"
+          details={
+            <>
+              You can use{" "}
+              <a
+                className="border-b border-slate-400"
+                target="_blank"
+                rel="noreferrer noopener"
+                href="https://www.markdownguide.org/basic-syntax/#links"
+              >
+                Markdown link syntax
+              </a>{" "}
+              to embed links in the PDF
+            </>
+          }
+        >
           <Input
             textarea
             placeholder="[Pay here](https://example.com/pay) or contact me for other options"

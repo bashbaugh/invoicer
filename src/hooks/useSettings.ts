@@ -1,4 +1,6 @@
 import { TogglTimeEntry } from "@/app/api/toggl/route";
+import { templates, type TemplateID } from "@/templates";
+import { useMemo } from "react";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
@@ -6,6 +8,9 @@ import { immer } from "zustand/middleware/immer";
 interface InvoicerSettings {
   openTab: number;
   setTab: (tab: number) => void;
+
+  templateId?: TemplateID;
+  setTemplateId: (templateId: TemplateID) => void;
 
   lineItems: Array<{
     description: string;
@@ -26,6 +31,9 @@ export const useSettings = create(
     immer<InvoicerSettings>((set) => ({
       openTab: 0,
       setTab: (tab) => set({ openTab: tab }),
+
+      templateId: "template1",
+      setTemplateId: (templateId) => set({ templateId }),
 
       lineItems: [],
       addLineItem: () =>
@@ -50,3 +58,11 @@ export const useSettings = create(
     }
   )
 );
+
+export const useCurrentTemplate = () => {
+  const templateId = useSettings((s) => s.templateId);
+
+  return useMemo(() => {
+    return templates.find((t) => t.id === templateId);
+  }, [templateId]);
+};

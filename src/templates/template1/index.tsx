@@ -1,7 +1,9 @@
 "use client";
 
 import { Document, Page, Text, View, Font, Link } from "@react-pdf/renderer";
-import { TemplateProps } from ".";
+import { TemplateProps } from "..";
+import { parseMdLinks } from "@/lib/util";
+import TemplatePhoto from "./preview.png";
 
 Font.register({
   family: "Clash Grotesk",
@@ -27,6 +29,20 @@ Font.register({
   fontStyle: "normal",
   fontWeight: "bold",
 });
+
+const WithMarkdownLinks = ({ text }: { text: string }) => (
+  <>
+    {parseMdLinks(text).map((seg, i) =>
+      seg.href ? (
+        <Link key={i} src={seg.href}>
+          {seg.text}
+        </Link>
+      ) : (
+        seg.text
+      )
+    )}
+  </>
+);
 
 const ITable = ({
   rows,
@@ -118,9 +134,7 @@ const ITable = ({
     </View>
   ));
 
-export default function Template1(props: TemplateProps) {
-  console.log(props.invoice);
-
+function Template1(props: TemplateProps) {
   return (
     <Document>
       <Page
@@ -314,7 +328,9 @@ export default function Template1(props: TemplateProps) {
                   >
                     Payment
                   </Text>
-                  <Text>{props.invoice.paymentDetails}</Text>
+                  <Text>
+                    <WithMarkdownLinks text={props.invoice.paymentDetails} />
+                  </Text>
                 </>
               )}
             </View>
@@ -335,10 +351,14 @@ export default function Template1(props: TemplateProps) {
               fontSize: "12px",
             }}
           >
-            {props.invoice.note}
+            <WithMarkdownLinks text={props.invoice.note} />
           </Text>
         </View>
       </Page>
     </Document>
   );
 }
+
+Template1.previewPhoto = TemplatePhoto;
+
+export default Template1;

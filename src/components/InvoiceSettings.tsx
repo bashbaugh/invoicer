@@ -6,6 +6,7 @@ import ItemsPanel from "./ItemsPanel";
 import { useSettings } from "@/hooks/useSettings";
 import InvoicePanel from "./InvoicePanel";
 import TemplatesPanel from "./TemplatesPanel";
+import InvoiceDownloadButton from "./InvoiceDownloadButton";
 
 function SettingsTab({ children }: { children: React.ReactNode }) {
   return (

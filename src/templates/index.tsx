@@ -6,24 +6,20 @@ import Template1 from "./template1";
 
 export const templates = [
   {
+    id: "template1",
     name: "Template 1",
     component: Template1,
   },
+  // {
+  //   id: "template2",
+  //   name: "Template 2",
+  //   component: Template1,
+  // },
 ] as const;
+
+export type TemplateData = (typeof templates)[number];
+export type TemplateID = (typeof templates)[number]["id"];
 
 export type TemplateProps = {
   invoice: InvoiceData;
 };
-
-interface InvoiceGeneratorProps {
-  template: number;
-  invoice: InvoiceData;
-}
-
-export default function InvoiceGenerator({
-  template,
-  invoice,
-}: InvoiceGeneratorProps) {
-  const InvoiceTemplate = templates[template].component;
-  return <InvoiceTemplate invoice={invoice} />;
-}

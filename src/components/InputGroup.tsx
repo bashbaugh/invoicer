@@ -2,7 +2,7 @@ import clsx from "clsx";
 
 interface InputGroupProps {
   label: string;
-  details?: string;
+  details?: React.ReactNode;
   children: React.ReactNode;
   className?: string;
 }

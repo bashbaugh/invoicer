@@ -1,3 +1,4 @@
+import InvoiceDownloadButton from "@/components/InvoiceDownloadButton";
 import InvoicePreview from "@/components/InvoicePreview";
 import InvoiceSettings from "@/components/InvoiceSettings";
 import Link from "next/link";
@@ -13,6 +14,10 @@ export default function Home() {
               href="/about"
               className="bg-button-bg rounded-full py-1 px-2 text-sm"
             >{`what's this?`}</Link>
+
+            <div className="flex-1" />
+
+            <InvoiceDownloadButton />
           </div>
           <InvoiceSettings />
         </div>

@@ -110,7 +110,7 @@ export default function LineItem({ idx }: ItemCardProps) {
         <Input
           defaultValue={item.unitPrice}
           onBlur={(e) => changeQuantityPrice(item.quantity, e.target.value)}
-          placeholder="Rate/unit price"
+          placeholder={item.togglProjects?.length ? "Rate" : "Unit price"}
         />
 
         {!item.togglProjects?.length && (
