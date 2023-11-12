@@ -305,14 +305,18 @@ export default function Template1(props: TemplateProps) {
                 fontSize: "12px",
               }}
             >
-              <Text
-                style={{
-                  fontFamily: "Clash Grotesk",
-                }}
-              >
-                Payment
-              </Text>
-              <Text>{props.invoice.paymentDetails}</Text>
+              {props.invoice.paymentDetails && (
+                <>
+                  <Text
+                    style={{
+                      fontFamily: "Clash Grotesk",
+                    }}
+                  >
+                    Payment
+                  </Text>
+                  <Text>{props.invoice.paymentDetails}</Text>
+                </>
+              )}
             </View>
             <Text
               style={{

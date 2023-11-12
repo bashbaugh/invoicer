@@ -5,6 +5,7 @@ import clsx from "clsx";
 import ItemsPanel from "./ItemsPanel";
 import { useSettings } from "@/hooks/useSettings";
 import InvoicePanel from "./InvoicePanel";
+import TemplatesPanel from "./TemplatesPanel";
 
 function SettingsTab({ children }: { children: React.ReactNode }) {
   return (
@@ -39,9 +40,10 @@ export default function InvoiceSettings() {
           <SettingsTab>Invoice</SettingsTab>
           <SettingsTab>Line Items</SettingsTab>
         </Tab.List>
-        <Tab.Panels className="h-full overflow-y-auto mt-3 pb-8">
-          {/* <div className="absolute bottom-0 h-12 bg-green-300" /> */}
-          <SettingsPanel>Template</SettingsPanel>
+        <Tab.Panels className="h-full overflow-y-auto mt-3 pb-8 pr-1">
+          <SettingsPanel>
+            <TemplatesPanel />
+          </SettingsPanel>
           <SettingsPanel>
             <InvoicePanel />
           </SettingsPanel>

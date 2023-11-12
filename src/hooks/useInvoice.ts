@@ -42,31 +42,34 @@ export interface InvoiceData {
   note: string;
 }
 
+const initialInvoice: InvoiceData = {
+  lineItems: [],
+  subtotal: "$0",
+  total: "$0",
+  recipient: {
+    name: "Some Company",
+    contactDetails: "123 Blueberry Drive\nCity, ST 12345",
+  },
+  from: {
+    name: "Jane Smith",
+    contactDetails: "134 Raspberry Circle\nCity, ST 12345\nme@mydomain.com",
+  },
+  issueDate: "11/01/2023",
+  dueDate: "11/31/2023",
+  invoiceNumber: "INV-001",
+  invoiceSubtitle: "October 2023",
+  paymentDetails: "",
+  note: "",
+};
+
 export const useInvoice = create(
   persist<{
     invoice: InvoiceData;
     updateInvoiceData: (data: DeepPartial<InvoiceData>) => void;
+    resetInvoiceData: () => void;
   }>(
     (set) => ({
-      invoice: {
-        lineItems: [],
-        subtotal: "$0",
-        total: "$0",
-        recipient: {
-          name: "Some Company",
-          contactDetails: "123 Blueberry Drive\nCity, ST 12345",
-        },
-        from: {
-          name: "Jane Smith",
-          contactDetails: "134 Raspberry Circle\nCity, ST 12345",
-        },
-        issueDate: "11/01/2023",
-        dueDate: "11/31/2023",
-        invoiceNumber: "INV-002",
-        invoiceSubtitle: "October 2023",
-        paymentDetails: "Lorem Ipsum",
-        note: "Thank you",
-      },
+      invoice: initialInvoice,
 
       updateInvoiceData: (data) => {
         set((state) => {
@@ -74,14 +77,18 @@ export const useInvoice = create(
             invoice: deepmerge(state.invoice, data, {
               // Overwrite arrays
               arrayMerge: (_, sourceArray) => sourceArray,
-            }),
+            }) as InvoiceData,
           };
         });
+      },
+
+      resetInvoiceData: () => {
+        set({ invoice: initialInvoice });
       },
     }),
     {
       name: "invoice-data",
-      version: 2,
+      version: 0,
     }
   )
 );

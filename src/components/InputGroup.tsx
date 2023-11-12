@@ -1,16 +1,20 @@
+import clsx from "clsx";
+
 interface InputGroupProps {
   label: string;
   details?: string;
   children: React.ReactNode;
+  className?: string;
 }
 
 export default function InputGroup({
   label,
   details,
   children,
+  className,
 }: InputGroupProps) {
   return (
-    <label className="w-full flex flex-col gap-1">
+    <label className={clsx("w-full flex flex-col gap-1", className)}>
       <span className="font-heading font-medium">{label}</span>
       {children}
       <div className="text-xs text-gray-400">{details}</div>

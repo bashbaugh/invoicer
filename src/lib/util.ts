@@ -9,3 +9,8 @@ export const secToString = (ms: number) => {
 export const numFromStr = (str: string) => {
   return Number(str.replace(/^\D+/g, "").replace(/\D+$/g, ""));
 };
+
+export const commaNumber = (num: number) => {
+  // https://stackoverflow.com/a/2901298/8748307
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};

@@ -55,7 +55,7 @@ export default function ProjectSelector({
               ) : inputFocused ? (
                 `Search projects...`
               ) : (
-                `Connect Toggl projects`
+                `Sync Toggl projects`
               )}
             </Combobox.Label>
             <Combobox.Input

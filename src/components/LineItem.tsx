@@ -1,11 +1,12 @@
 import { TogglTimeEntry } from "@/app/api/toggl/route";
 import { useSettings } from "@/hooks/useSettings";
 import { useTogglData } from "@/hooks/useTogglData";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import ProjectSelector from "./ProjectSelector";
 import Input from "./Input";
 import { FiTrash } from "react-icons/fi";
 import { numFromStr, secToString } from "@/lib/util";
+import InputGroup from "./InputGroup";
 
 function EntriesTable({ entries }: { entries: TogglTimeEntry[] }) {
   return (
@@ -46,6 +47,8 @@ export default function LineItem({ idx }: ItemCardProps) {
   const removeSelf = () => _removeLine(idx);
 
   const aggregatedEntries = useMemo(() => {
+    if (!item.togglProjects?.length) return null;
+
     // Combine all entries with the same description/project into a single entry
 
     const itemTimeEntries = entries?.filter((e) =>
@@ -71,6 +74,7 @@ export default function LineItem({ idx }: ItemCardProps) {
       return acc;
     }, [] as TogglTimeEntry[]);
 
+    // Compute the quantity/cost from the entries and update line item
     const totalDuration = aggregatedEntries.reduce(
       (acc, e) => acc + e.duration,
       0
@@ -88,23 +92,47 @@ export default function LineItem({ idx }: ItemCardProps) {
     return aggregatedEntries;
   }, [item.togglProjects, item.unitPrice, entries]);
 
+  const changeQuantityPrice = (quantity?: string, unitPrice?: string) => {
+    const rate = numFromStr(unitPrice || "0");
+    const total = Number(quantity || 1) * rate;
+    update({ quantity, unitPrice, total: "$" + total.toFixed(2) });
+  };
+
   return (
     <div className="rounded-xl p-3 bg-primary-card">
       <div className="flex gap-3 items-center mb-3">
         <Input
+          className="basis-1/2 flex-shrink-0"
           defaultValue={item.description}
           onBlur={(e) => update({ description: e.target.value })}
           placeholder="Item name"
         />
         <Input
           defaultValue={item.unitPrice}
-          onBlur={(e) => update({ unitPrice: e.target.value })}
+          onBlur={(e) => changeQuantityPrice(item.quantity, e.target.value)}
           placeholder="Rate/unit price"
         />
+
+        {!item.togglProjects?.length && (
+          <Input
+            type="number"
+            defaultValue={item.quantity}
+            onBlur={(e) => changeQuantityPrice(e.target.value, item.unitPrice)}
+            placeholder="Quantity"
+          />
+        )}
+
         <button className="mr-2" onClick={removeSelf}>
           <FiTrash className="w-4 h-4 opacity-60 hover:opacity-80" />
         </button>
       </div>
+
+      <div className="relative my-4 h-[1px] bg-slate-400 text-slate-400">
+        <span className="inline-block absolute whitespace-nowrap top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary-card px-2 text-sm">
+          or, compute time automatically
+        </span>
+      </div>
+
       <ProjectSelector
         projects={projects}
         selectedProjects={item.togglProjects || []}

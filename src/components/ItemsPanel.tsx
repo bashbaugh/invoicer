@@ -1,13 +1,11 @@
 import { useTogglData } from "@/hooks/useTogglData";
 import Button from "./Button";
-import ProjectSelector from "./ProjectSelector";
-import { useEffect, useMemo } from "react";
-import { TogglTimeEntry } from "@/app/api/toggl/route";
+import { useEffect } from "react";
 import { useSettings } from "@/hooks/useSettings";
 import { useInvoice } from "@/hooks/useInvoice";
 import { HiPlus, HiRefresh } from "react-icons/hi";
 import LineItem from "./LineItem";
-import { numFromStr, secToString } from "@/lib/util";
+import { commaNumber, numFromStr, secToString } from "@/lib/util";
 
 export default function ItemsPanel() {
   const { projects, loadData } = useTogglData();
@@ -38,8 +36,13 @@ export default function ItemsPanel() {
 
     const total =
       "$" +
-      Math.floor(
-        invoiceLineItems?.reduce((acc, item) => acc + numFromStr(item.total), 0)
+      commaNumber(
+        Math.floor(
+          invoiceLineItems?.reduce(
+            (acc, item) => acc + numFromStr(item.total),
+            0
+          )
+        )
       );
 
     setInvoiceData({
@@ -65,6 +68,9 @@ export default function ItemsPanel() {
         {lineItems?.map((i, idx) => (
           <LineItem key={idx + i.description} idx={idx} />
         ))}
+        {!lineItems?.length && (
+          <p className="my-2 opacity-60 text-sm text-center">No items yet</p>
+        )}
       </div>
     </div>
   );
