@@ -2,6 +2,12 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import deepmerge from "deepmerge";
 
+type DeepPartial<T> = T extends object
+  ? {
+      [P in keyof T]?: DeepPartial<T[P]>;
+    }
+  : T;
+
 export interface InvoiceData {
   lineItems: Array<{
     description: string;
@@ -39,7 +45,7 @@ export interface InvoiceData {
 export const useInvoice = create(
   persist<{
     invoice: InvoiceData;
-    updateInvoiceData: (data: Partial<InvoiceData>) => void;
+    updateInvoiceData: (data: DeepPartial<InvoiceData>) => void;
   }>(
     (set) => ({
       invoice: {
@@ -65,10 +71,10 @@ export const useInvoice = create(
       updateInvoiceData: (data) => {
         set((state) => {
           return {
-            invoice: {
-              ...state.invoice,
-              ...data,
-            },
+            invoice: deepmerge(state.invoice, data, {
+              // Overwrite arrays
+              arrayMerge: (_, sourceArray) => sourceArray,
+            }),
           };
         });
       },

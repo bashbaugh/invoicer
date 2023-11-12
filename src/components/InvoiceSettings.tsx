@@ -4,6 +4,7 @@ import { Tab } from "@headlessui/react";
 import clsx from "clsx";
 import ItemsPanel from "./ItemsPanel";
 import { useSettings } from "@/hooks/useSettings";
+import InvoicePanel from "./InvoicePanel";
 
 function SettingsTab({ children }: { children: React.ReactNode }) {
   return (
@@ -41,7 +42,9 @@ export default function InvoiceSettings() {
         <Tab.Panels className="h-full overflow-y-auto mt-3 pb-8">
           {/* <div className="absolute bottom-0 h-12 bg-green-300" /> */}
           <SettingsPanel>Template</SettingsPanel>
-          <SettingsPanel>Invoice</SettingsPanel>
+          <SettingsPanel>
+            <InvoicePanel />
+          </SettingsPanel>
           <SettingsPanel>
             <ItemsPanel />
           </SettingsPanel>
