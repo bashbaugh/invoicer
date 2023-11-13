@@ -12,3 +12,15 @@ body {
     )
     rgb(var(--background-start-rgb)); */
 }
+
+
+@layer base {
+  .content {
+    @apply max-w-xl;
+
+  }
+
+  .content p {
+    @apply my-3;
+  }
+}

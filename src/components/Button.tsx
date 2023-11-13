@@ -5,6 +5,7 @@ interface ButtonProps {
   children: React.ReactNode;
   className?: string;
   icon?: React.ReactNode;
+  as?: React.ElementType;
 }
 
 export default function Button({
@@ -12,9 +13,12 @@ export default function Button({
   children,
   className,
   icon,
+  as,
 }: ButtonProps) {
+  const Comp = as || "button";
+
   return (
-    <button
+    <Comp
       onClick={onClick}
       className={clsx(
         "bg-button-bg flex items-center gap-1 rounded-xl py-2 px-3 font-heading font-medium text-primary-800",
@@ -23,6 +27,6 @@ export default function Button({
     >
       {icon}
       <span>{children}</span>
-    </button>
+    </Comp>
   );
 }
