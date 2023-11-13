@@ -34,7 +34,7 @@ interface ItemCardProps {
 }
 
 export default function LineItem({ idx }: ItemCardProps) {
-  const { projects, entries, loadData } = useTogglData();
+  const { projects, entries, loadData, togglToken } = useTogglData();
 
   const [lineItems, _updateLine, _removeLine] = useSettings((s) => [
     s.lineItems,
@@ -99,8 +99,8 @@ export default function LineItem({ idx }: ItemCardProps) {
   };
 
   return (
-    <div className="rounded-xl p-3 bg-primary-card">
-      <div className="flex gap-3 items-center mb-3">
+    <div className="rounded-xl p-3 py-5 bg-primary-card">
+      <div className="flex gap-3 items-center">
         <Input
           className="basis-1/2 flex-shrink-0"
           defaultValue={item.description}
@@ -127,17 +127,22 @@ export default function LineItem({ idx }: ItemCardProps) {
         </button>
       </div>
 
-      <div className="relative my-4 h-[1px] bg-slate-400 text-slate-400">
-        <span className="inline-block absolute whitespace-nowrap top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary-card px-2 text-sm">
-          or, compute time automatically
-        </span>
-      </div>
+      {togglToken && (
+        <>
+          <div className="relative my-4 h-[1px] bg-slate-400 text-slate-400">
+            <span className="inline-block absolute whitespace-nowrap top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary-card px-2 text-sm">
+              or, compute time automatically
+            </span>
+          </div>
 
-      <ProjectSelector
-        projects={projects}
-        selectedProjects={item.togglProjects || []}
-        changeSelected={(pids) => update({ togglProjects: pids })}
-      />
+          <ProjectSelector
+            projects={projects}
+            selectedProjects={item.togglProjects || []}
+            changeSelected={(pids) => update({ togglProjects: pids })}
+          />
+        </>
+      )}
+
       {aggregatedEntries?.length ? (
         <div className="mt-4">
           <EntriesTable entries={aggregatedEntries} />

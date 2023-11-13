@@ -1,7 +1,5 @@
-import { time } from "console";
 import { NextResponse } from "next/server";
-
-const TOGGL_TOKEN = process.env.TOGGL_TOKEN;
+import { cookies } from "next/headers";
 
 interface RTogglTimeEntry {
   /** When last updated */
@@ -34,6 +32,8 @@ interface RTogglProject {
 export type TogglProject = Omit<RTogglProject, "server_deleted_at">;
 
 export async function GET() {
+  const TOGGL_TOKEN = cookies().get("t_key")?.value;
+
   const togglFetch = <T extends any>(url: string): Promise<T> =>
     fetch(url, {
       headers: {

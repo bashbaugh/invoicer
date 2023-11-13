@@ -1,14 +1,18 @@
 import { useTogglData } from "@/hooks/useTogglData";
 import Button from "./Button";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSettings } from "@/hooks/useSettings";
 import { useInvoice } from "@/hooks/useInvoice";
-import { HiPlus, HiRefresh } from "react-icons/hi";
+import { HiClock, HiOutlineCog, HiPlus, HiRefresh } from "react-icons/hi";
 import LineItem from "./LineItem";
 import { commaNumber, numFromStr, secToString } from "@/lib/util";
+import Dialog from "./Dialog";
+import IntegrationSettingsPanel from "./IntegrationSettingsPanel";
 
 export default function ItemsPanel() {
-  const { projects, loadData } = useTogglData();
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
+  const { projects, loadData, togglToken } = useTogglData();
   const { updateInvoiceData: setInvoiceData } = useInvoice();
   const [lineItems, addLineItem] = useSettings((s) => [
     s.lineItems,
@@ -19,7 +23,7 @@ export default function ItemsPanel() {
     if (projects?.length === 0) {
       loadData();
     }
-  }, []);
+  }, [togglToken, loadData]);
 
   useEffect(() => {
     const invoiceLineItems = lineItems?.map((i) => ({
@@ -56,9 +60,15 @@ export default function ItemsPanel() {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex gap-3">
-        <Button icon={<HiRefresh />} onClick={loadData}>
-          Refresh Toggl Data
+        <Button
+          icon={togglToken ? <HiRefresh /> : <HiClock />}
+          onClick={togglToken ? loadData : () => setSettingsOpen(true)}
+        >
+          {togglToken ? "Refresh Toggl Data" : "Connect Toggl"}
         </Button>
+        <button onClick={() => setSettingsOpen(true)}>
+          <HiOutlineCog className="w-5 h-5" />
+        </button>
         <div className="flex-1" />
         <Button icon={<HiPlus />} onClick={addLineItem}>
           Add item
@@ -72,6 +82,14 @@ export default function ItemsPanel() {
           <p className="my-2 opacity-60 text-sm text-center">No items yet</p>
         )}
       </div>
+
+      <Dialog
+        isOpen={settingsOpen}
+        close={() => setSettingsOpen(false)}
+        title="Integration Settings"
+      >
+        <IntegrationSettingsPanel />
+      </Dialog>
     </div>
   );
 }

@@ -19,7 +19,7 @@ export default function Home() {
         projects.
       </p>
 
-      <p>{`If you wish to build additional features or templates, please open a pull request on GitHub!`}</p>
+      <p>{`Feel free to host this yourself. If you want to build additional features or templates, please open a pull request on GitHub!`}</p>
 
       <a
         href="https://github.com/bashbaugh/invoicer"
