@@ -48,7 +48,7 @@ export async function GET() {
   );
 
   const timeEntriesData = await togglFetch<RTogglTimeEntry[]>(
-    `https://api.track.toggl.com/api/v9/me/time_entries?start_date=2023-10-01&end_date=2023-11-30`
+    `https://api.track.toggl.com/api/v9/me/time_entries?start_date=2023-11-11&end_date=2024-02-08`
   );
 
   const projects = projectData
